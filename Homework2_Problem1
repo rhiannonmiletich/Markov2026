@@ -1,0 +1,38 @@
+% Parameters
+gamma = 4;
+x0 = 10;
+Ns = [100, 1000, 10000];
+
+% Theoretical PDF
+x = linspace(x0, 60, 1000);
+C = (gamma - 1) * x0^(gamma - 1);
+pdf = C * x.^(-gamma);
+
+figure;
+hold on;
+
+for i = 1:length(Ns)
+    N = Ns(i);
+
+    % Generate samples using inverse CDF
+    U = rand(N, 1);
+    X = x0 * (1 - U).^(-1 / (gamma - 1));
+
+    % Plot normalized histogram
+    histogram(X, ...
+        'Normalization', 'pdf', ...
+        'BinLimits', [0 60], ...
+        'NumBins', 50, ...
+        'DisplayStyle', 'bar', ...
+        'FaceAlpha', 0.4);
+end
+
+% Plot theoretical PDF
+plot(x, pdf, 'k', 'LineWidth', 2);
+
+xlim([0 60]);
+xlabel('x');
+ylabel('Probability density');
+title('Power-law distribution samples');
+legend('N = 100', 'N = 1000', 'N = 10000', 'Theoretical PDF');
+hold off;
