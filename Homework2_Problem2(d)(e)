@@ -1,0 +1,38 @@
+% Number of samples
+N = 1e6;
+
+tic  % start timer
+
+% Generate samples from two independent exponentials
+E1 = -log(rand(N,1));  % N x 1 column vector of samples from Exp(1)
+E2 = -log(rand(N,1));  % N x 1 column vector of samples from Exp(1)
+
+% Sum to get N Gamma(2,1) samples
+X = E1 + E2;
+
+runtime = toc;  % end timer
+fprintf('Runtime: %.2f seconds\n', runtime);
+
+% Histogram settings
+nbins = 100;              
+xrange = [0 15];         
+
+% Plot histogram
+figure;
+histogram(X, nbins, 'Normalization', 'pdf'); % Normalize area = 1
+hold on;
+
+% Plot theoretical Gamma(2,1) PDF
+x = linspace(xrange(1), xrange(2), 500);   
+f = x .* exp(-x);
+plot(x, f, 'r', 'LineWidth', 2);
+
+% Labels and legend
+xlabel('x');
+ylabel('Probability Density');
+title('Histogram of Gamma(2,1) samples with theoretical PDF');
+legend('Samples (histogram)', 'Theoretical PDF');
+
+% Optional: set x-axis limits
+xlim(xrange);
+hold off;
