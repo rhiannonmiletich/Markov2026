@@ -1,0 +1,28 @@
+% Number of accepted samples
+N = 1e6;
+
+% Create array of N zeros
+X = zeros(N,1);
+
+% Constant c
+c = 4 / exp(1);
+
+tic  % start timer
+
+i = 1;
+while i <= N % Repeat until N accepted samples
+    % Generate sample Y from g(x)
+    Y = -2 * log(rand);
+
+    % Generate uniform
+    U = rand;
+
+    % Acceptance test
+    if U <= (Y * exp(-Y)) / (c * 0.5 * exp(-Y/2))
+        X(i) = Y;
+        i = i + 1;
+    end
+end
+
+runtime = toc;  % end timer
+fprintf('Runtime: %.2f seconds\n', runtime);
