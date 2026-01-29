@@ -3,12 +3,8 @@ N = 1e6;
 
 tic  % start timer
 
-% Generate samples from two independent exponentials
-E1 = -log(rand(N,1));  % N x 1 column vector of samples from Exp(1)
-E2 = -log(rand(N,1));  % N x 1 column vector of samples from Exp(1)
-
-% Sum to get N Gamma(2,1) samples
-X = E1 + E2;
+% Generate N independent Gamma(2,1) samples
+X = -log(rand(N,1).*rand(N,1)); 
 
 runtime = toc;  % end timer
 fprintf('Runtime: %.2f seconds\n', runtime);
