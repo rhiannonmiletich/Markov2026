@@ -1,0 +1,44 @@
+% Number of samples
+N = 1e6;
+
+% Generate uniforms
+U = rand(N,1);
+
+% Create initial array of zeros
+X = zeros(N,1);
+
+% Newton parameters
+tol = 1e-8;
+maxIter = 50;
+
+tic
+
+for i = 1:N
+    u = U(i);
+
+    % Initial guess
+    x = 2;
+
+    for k = 1:maxIter
+        g  = 1 - exp(-x)*(x + 1) - u;
+        gp = x * exp(-x);
+
+        x_new = x - g / gp;
+
+        % Enforce positivity
+        if x_new <= 0
+            x_new = x / 2;
+        end
+
+        if abs(x_new - x) < tol
+            break
+        end
+
+        x = x_new;
+    end
+    % Store x as the ith entry (sample) in array X
+    X(i) = x;
+end
+
+runtime = toc;  % End timer
+fprintf('Runtime: %.2f seconds\n', runtime);
