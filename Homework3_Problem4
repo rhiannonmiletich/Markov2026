@@ -1,0 +1,86 @@
+% Define the transition matrix
+  P = [1/2  1/2  0    0    0    0;
+     0    1/2  1/2  0    0    0;
+     1/3  0    1/3  1/3  0    0;
+     0    0    0    1/2  1/2  0;
+     0    0    0    0    0    1;
+     0    0    0    0    1    0];
+
+% Compute P^5
+P5 = P^5;
+
+disp(P5)
+
+% Number of simulations
+Nsim = 10000;
+
+% Number of steps
+Nsteps = 5;
+
+% Counter for how many times X5 = 4
+count_X5_eq_4 = 0;
+
+for sim = 1:Nsim
+    
+    % Start at X0 = 1
+    state = 1;
+    
+    % Run the chain for 5 steps
+    for t = 1:Nsteps
+        u = rand;
+        
+        if state == 1
+            % From state 1
+            if u < 1/2
+                state = 1;
+            else
+                state = 2;
+            end
+            
+        elseif state == 2
+            % From state 2
+            if u < 1/2
+                state = 2;
+            else
+                state = 3;
+            end
+            
+        elseif state == 3
+            % From state 3
+            if u < 1/3
+                state = 1;
+            elseif u < 2/3
+                state = 3;
+            else
+                state = 4;
+            end
+            
+        elseif state == 4
+            % From state 4
+            if u < 1/2
+                state = 4;
+            else
+                state = 5;
+            end
+            
+        elseif state == 5
+            % From state 5
+            state = 6;
+            
+        elseif state == 6
+            % From state 6
+            state = 5;
+        end
+    end
+    
+    % Check if X5 = 4
+    if state == 4
+        count_X5_eq_4 = count_X5_eq_4 + 1;
+    end
+end
+
+% Estimated probability
+frac_sim = count_X5_eq_4 / Nsim;
+
+% Display results
+disp(['Fraction of simulations with X5 = 4: ', num2str(frac_sim)])
