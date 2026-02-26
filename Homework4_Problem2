@@ -44,3 +44,25 @@ disp(e)
 % Expected time starting from 5 machines
 disp('Expected time starting from 5 machines:')
 disp(e(5))
+
+
+% Coefficient matrix A 
+A = [
+   1       -0.1     -0.01     -0.001     -0.0001    -0.00001;  % pi0 equation
+   0       0.1      -0.18      -0.027     -0.0036    -0.00045; % pi1 equation
+   0        0        0.19      -0.243     -0.0486    -0.0081;  % pi2 equation
+   0        0         0         0.271     -0.2916    -0.0729;  % pi3 equation
+   0        0         0         0          0.3439    -0.32805; % pi4 equation
+  -1        0         0         0          0          0.4095;
+   1        1        1          1          1          1        % normalization
+];
+
+% Right-hand side
+b = [0; 0; 0; 0; 0; 0; 1];
+
+% Solve the linear system
+pi = A\b;   % output is column vector automatically
+
+% Display the stationary distribution
+disp('Stationary distribution (column vector):')
+disp(pi) 
