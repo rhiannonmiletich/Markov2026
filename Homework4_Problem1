@@ -1,0 +1,31 @@
+% Number of simulations
+numSim = 100000;
+
+% Parameters
+q = 0.4;
+p = 0.35;
+s = 0.25;
+
+% Starting money
+i = 10;
+
+% Preallocate results vector
+results = zeros(numSim, 1);
+
+% Run simulation
+for k = 1:numSim
+    
+    b = ((q - p) / s) * ...
+        ((1 - sqrt(1 - 4*p*q)) / (2*p))^i ...
+        + i ...
+        + (p - q) / s;
+    
+    results(k) = b;
+    
+end
+
+% Expected value (average)
+expected_value = mean(results);
+
+% Display result
+disp(['Expected Value after 100,000 simulations: ', num2str(expected_value)])
