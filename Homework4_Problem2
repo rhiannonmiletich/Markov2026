@@ -1,0 +1,21 @@
+% Number of machines
+n = 5;
+
+% Probabilities
+p_work = 0.9;    % machine continues working
+p_break = 0.1;   % machine breaks
+
+% Create empty transition matrix
+P = zeros(n+1);
+
+% If all machines are broken, 5 new ones are installed
+P(1, n+1) = 1;     % state 0 goes to state 5
+
+% Otherwise
+for i = 1:n
+    for j = 0:i
+        P(i+1, j+1) = nchoosek(i,j) * (p_work^j) * (p_break^(i-j));
+    end
+end
+
+disp(P)
