@@ -19,3 +19,28 @@ for i = 1:n
 end
 
 disp(P)
+
+
+% Matrix A from the linear system
+
+A = [
+    0.1       0        0        0        0;
+   -0.18     0.19      0        0        0;
+   -0.027   -0.243     0.271     0        0;
+   -0.0036  -0.0486   -0.2916   0.3439    0;
+   -0.00045 -0.0081   -0.0729  -0.32805  0.40951
+];
+
+% Right-hand side vector
+b = ones(5,1);
+
+% Solve the system A*e = b
+e = A \ b;
+
+% Display results
+disp('Expected hitting times e1 through e5:')
+disp(e)
+
+% Expected time starting from 5 machines
+disp('Expected time starting from 5 machines:')
+disp(e(5))
