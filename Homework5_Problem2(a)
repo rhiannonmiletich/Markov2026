@@ -1,0 +1,58 @@
+% Define symbolic variables
+syms K a b real
+assume(K > 0);
+
+% Number of states
+n = 5;
+
+% Define p_i and q_i
+p = sym('p', [1 n]);
+q = sym('q', [1 n]);
+
+for i = 1:n
+    p(i) = K*exp(a*i);
+    q(i) = K*exp(b*(i-1));
+end
+
+% Build the matrix A such that A * pi = 0 with last row replaced by ones for normalization
+A = sym(zeros(n));
+
+% Fill in rows 1 to n-1 (detailed balance rows)
+% Row 1: -p1 * pi1 + q2 * pi2 = 0
+A(1,1) = -p(1);
+A(1,2) = q(2);
+
+% Rows 2 to n-1
+for i = 2:n-1
+    A(i,i-1) = p(i-1);
+    A(i,i) = -(p(i) + q(i));
+    A(i,i+1) = q(i+1);
+end
+
+% Row n: normalization condition sum(pi) = 1
+A(n,:) = ones(1,n);
+
+% Right hand side
+bvec = sym(zeros(n,1));
+bvec(n) = 1;
+
+% Solve the linear system
+pi = A \ bvec;
+
+% Display the resulting stationary distribution in terms of variables K, a, and b
+pi = simplify(pi)
+
+TO FIND STATIONARY DISTRIBUTION FOR PART (D):
+% Assign numerical values
+K_val = 0.1;
+a_val = 0.04;
+b_val = 0.16;
+
+% Substitute into symbolic vector
+pi_num = subs(pi, [K, a, b], [K_val, a_val, b_val]);
+
+% Convert to double to get numbers
+pi_num = double(pi_num);
+
+disp('Stationary distribution with numerical values:')
+disp(pi_num)
