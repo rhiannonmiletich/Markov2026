@@ -1,0 +1,68 @@
+FOR SIMULATION AND HISTOGRAM IN PART(C):
+%% Parameters
+a = 0.04;
+b = 0.16;
+K = 0.1;
+n = 5;              % number of states
+numSteps = 1e6;     % number of steps to simulate
+
+%% Compute transition probabilities
+p = K * exp(a*(1:n));      % probability to move up
+q = K * exp(b*(0:n-1));    % probability to move down
+
+% Construct the transition matrix P
+P = zeros(n);
+P(1,1) = 1 - p(1);  P(1,2) = p(1);
+P(2,1) = q(2);       P(2,2) = 1 - p(2) - q(2); P(2,3) = p(2);
+P(3,2) = q(3);       P(3,3) = 1 - p(3) - q(3); P(3,4) = p(3);
+P(4,3) = q(4);       P(4,4) = 1 - p(4) - q(4); P(4,5) = p(4);
+P(5,4) = q(5);       P(5,5) = 1 - q(5);
+
+%% Simulate the Markov chain
+state = zeros(numSteps,1);  % vector to store states
+state(1) = 1;               % start in state 1 (can be any state)
+
+for t = 2:numSteps
+    r = rand;               % random number between 0 and 1
+    current = state(t-1);
+    % Determine next state
+    cumulative = cumsum(P(current,:));  % cumulative probabilities
+    next = find(r <= cumulative, 1, 'first'); % choose next state
+    state(t) = next;
+end
+
+%% Compute fraction of time in each state
+fractionTime = zeros(n,1);
+for i = 1:n
+    fractionTime(i) = sum(state == i) / numSteps;
+end
+
+%% Plot histogram
+figure;
+bar(1:n, fractionTime, 0.5);
+
+FOR JOINED HISTOGRAM IN PART (D):
+(first commented out "Plot histogram" section of code from PART (C))
+(code to compute pi_theoretical_b and pi_theoretical_a in corresponding files)
+
+%% Theoretical stationary distribution from part (b) 
+pi_theoretical_b = [0.2965; 0.2630; 0.2069; 0.1443; 0.0893];
+
+%% Theoretical stationary distribution from part (a)
+pi_theoretical_a = [0.2965; 0.2630; 0.2069; 0.1443; 0.0893];
+
+%% Plot side-by-side bars
+figure;
+b = bar([fractionTime, pi_theoretical_b, pi_theoretical_a], 'grouped'); % grouped bars
+
+% Set colors for each set
+b(1).FaceColor = [0.6 0.6 0.9];   % simulated: light blue
+b(2).FaceColor = [0.9 0.6 0.6];   % theoretical(b): light red/pink
+b(3).FaceColor = [0.6,0.9,0.6];   % theoretical(a): light green
+
+%% Labels and title
+xlabel('State');
+ylabel('Fraction of time');
+title('Simulated vs Theoretical Stationary Distributions');
+legend('Simulated\pi', 'Theoretical\pi (b)', 'Theoretical\pi(a)', 'Location', 'northeast');
+grid on;
