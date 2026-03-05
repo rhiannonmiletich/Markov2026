@@ -1,0 +1,57 @@
+% Parameters
+a = 0.04;
+b = 0.16;
+K = 0.1;
+n = 5;
+
+% Compute p_n and q_n
+p = K * exp(a*(1:n));      % p1, p2, p3, p4, p5
+q = K * exp(b*(0:n-1));    % q1, q2, q3, q4, q5
+
+% Build transition matrix P
+P = zeros(n);
+
+% Row 1
+P(1,1) = 1 - p(1);
+P(1,2) = p(1);
+
+% Row 2
+P(2,1) = q(2);
+P(2,2) = 1 - p(2) - q(2);
+P(2,3) = p(2);
+
+% Row 3
+P(3,2) = q(3);
+P(3,3) = 1 - p(3) - q(3);
+P(3,4) = p(3);
+
+% Row 4
+P(4,3) = q(4);
+P(4,4) = 1 - p(4) - q(4);
+P(4,5) = p(4);
+
+% Row 5
+P(5,4) = q(5);
+P(5,5) = 1 - q(5);
+
+% Display the transition matrix
+disp('Transition matrix P:')
+disp(P)
+
+% Display the transpose of P
+disp('Transpose of P (P'') :')
+disp(P')
+
+% Compute stationary distribution using eigenvector
+[V,D] = eig(P');           % eigenvectors of P transpose
+[~, idx] = min(abs(diag(D) - 1)); % index of column associated with eigenvalue closest to 1
+pi = V(:, idx);             % corresponding eigenvector
+
+% Normalize so sum(pi) = 1
+pi = pi / sum(pi);
+
+% Display stationary distribution with 4 decimal places
+disp('Stationary distribution pi (4 decimal places):')
+for i = 1:n
+    fprintf('pi(%d) = %.4f\n', i, pi(i))
+end
