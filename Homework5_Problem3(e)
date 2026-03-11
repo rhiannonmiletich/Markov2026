@@ -1,0 +1,82 @@
+syms a
+
+P = [1-a a 0;
+a 0 1-a;
+0 1-a a];
+
+A = P.';
+
+[V,D] = eig(A);
+
+A_num = double(subs(A,a,0.99));
+V_num = double(subs(V,a,0.99));
+D_num = double(subs(D,a,0.99));
+
+q0 = [1;0;0];
+
+nmax = 300;
+
+% theoretical q_n(1)
+qn1 = zeros(nmax+1,1);
+
+for n = 0:nmax
+qn = V_num*(D_num^n)*(V_num\q0);
+qn1(n+1) = qn(1);
+end
+
+% Parameters
+a = 0.99;
+N = 10000;        % number of chains
+T = 300;        % number of time steps
+
+% Store states of all chains
+state = ones(N,1);     % all start in state 1
+f = zeros(T,1);        % fraction in state 1
+
+for t = 1:T
+    
+    % Update each chain
+    for i = 1:N
+        
+        r = rand;   % random number
+        
+        if state(i) == 1
+            if r < (1-a)
+                state(i) = 1;
+            else
+                state(i) = 2;
+            end
+            
+        elseif state(i) == 2
+            if r < a
+                state(i) = 1;
+            else
+                state(i) = 3;
+            end
+            
+        elseif state(i) == 3
+            if r < a
+                state(i) = 3;
+            else
+                state(i) = 2;
+            end
+        end
+        
+    end
+    
+    % fraction of chains in state 1
+    f(t) = sum(state == 1) / N;
+    
+end
+
+% Plot 
+n = 0:nmax;
+
+plot(1:T, f,'LineWidth',2)
+hold on
+plot(n,qn1,'r','LineWidth',1)
+
+xlabel('n')
+ylabel('Probability of state 1')
+legend('Simulation f_n','Theoretical q_n(1)')
+title(['Markov Chain Convergence (N = ',num2str(N),')'])
