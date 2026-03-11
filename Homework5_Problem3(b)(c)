@@ -1,0 +1,54 @@
+% define symbolic variable
+syms a
+
+% transition matrix P
+P = [1-a,  a,   0;
+     a,    0, 1-a;
+     0,  1-a,  a];
+
+% transpose matrix A = P^T
+A = P.';
+
+% compute eigenvectors and eigenvalues
+[V,D] = eig(A);
+
+D = simplify(D);
+V = simplify(V);
+
+% display results
+disp('Matrix A = P^T:')
+disp(A)
+
+disp('Eigenvalues (diagonal of D):')
+disp(D)
+
+disp('Eigenvectors (columns of V):')
+disp(V)
+
+% substitute a = 0.99
+A_num = subs(A, a, 0.99);
+V_num = subs(V, a, 0.99);
+D_num = subs(D, a, 0.99);
+
+% convert to numeric values (optional but cleaner)
+A_num = double(A_num);
+V_num = double(V_num);
+D_num = double(D_num);
+
+disp('A with a = 0.99:')
+disp(A_num)
+
+disp('Eigenvalues:')
+disp(D_num)
+
+disp('Eigenvectors:')
+disp(V_num)
+
+% initial distribution (X0 = 1)
+q0 = [1;0;0];
+
+% compute coefficients in eigenvector basis
+c = V_num \ q0;
+
+disp('Coefficients c1, c2, c3:')
+disp(c)
