@@ -1,0 +1,45 @@
+% Transition matrix
+P = [0   1   0   0   0;
+     1/3 0   2/3 0   0;
+     0   1/2 0   1/2 0;
+     0   0   2/3 0   1/3;
+     0   0   0   1   0];
+
+% Define A = P^T
+A = P';
+
+% Initial distribution as a COLUMN vector (X0 = 2)
+q0T = [0; 0; 1; 0; 0];
+
+% Compute A^50
+A50 = A^50;
+
+% Compute q50^T
+q50T = A50 * q0T;
+
+disp('q50^T = ')
+disp(q50T)
+
+% Eigenvectors of A
+[V,D] = eig(A);
+
+% Find eigenvalue closest to 1
+[~,idx] = min(abs(diag(D) - 1));
+
+% Extract eigenvector
+pi_vec = V(:,idx);
+
+% Normalize so entries sum to 1
+pi_vec = pi_vec / sum(pi_vec);
+
+% Plot together
+i = 0:4;
+
+figure;
+stem(i, q50T, 'r', 'filled'); hold on;
+stem(i, pi_vec, 'b');
+
+legend('q_{50}(i)', '\pi(i)');
+xlabel('State i');
+ylabel('Probability');
+title('Comparison of q_{50} and stationary distribution');
