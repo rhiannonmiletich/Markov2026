@@ -1,0 +1,40 @@
+
+T = 48;          % game length in minutes
+lambda = 3;      % rate per minute
+
+% Simulate Team A scoring times
+tA = [];
+t = 0;
+
+while t < T
+    t = t + exprnd(1/lambda);   % exponential interarrival time
+    if t < T
+        tA = [tA t];
+    end
+end
+
+% Simulate Team B scoring times
+tB = [];
+t = 0;
+
+while t < T
+    t = t + exprnd(1/lambda);
+    if t < T
+        tB = [tB t];
+    end
+end
+
+% Plot results
+figure;
+stem(tA, ones(size(tA)), 'r', 'filled'); hold on;
+stem(tB, 2*ones(size(tB)), 'b', 'filled');
+
+ylim([0 3]);
+xlim([0 T]);
+
+yticks([1 2]);
+yticklabels({'Team A','Team B'});
+
+xlabel('Time (minutes)');
+title('Basket Scoring Times (Poisson Process Simulation)');
+grid on;
