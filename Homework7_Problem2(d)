@@ -1,0 +1,42 @@
+
+T = 48;          % game length
+lambda = 3;      % per team rate
+lambda_total = 2*lambda;   % combined process rate
+
+tA = [];
+tB = [];
+
+t = 0;
+
+% Simulate combined process
+while t < T
+    
+    % next event time (combined process)
+    t = t + exprnd(1/lambda_total);
+    
+    if t < T
+        
+        % assign event to team A or B
+        if rand < 0.5
+            tA = [tA t];   % Team A basket
+        else
+            tB = [tB t];   % Team B basket
+        end
+        
+    end
+end
+
+% Plot results
+figure;
+stem(tA, ones(size(tA)), 'r', 'filled'); hold on;
+stem(tB, 2*ones(size(tB)), 'b', 'filled');
+
+ylim([0 3]);
+xlim([0 T]);
+
+yticks([1 2]);
+yticklabels({'Team A','Team B'});
+
+xlabel('Time (minutes)');
+title('Single Combined Poisson Process (Thinning Method)');
+grid on;
