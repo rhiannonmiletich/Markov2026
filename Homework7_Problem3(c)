@@ -1,0 +1,36 @@
+% Parameters
+T = 120;
+lambda_max = 8.5;
+
+% Rate function
+lambda = @(t) 0.5 * (1 + (t/30).^2);
+
+% Generate arrivals from HPPP with rate lambda_max
+t = 0;
+times = [];
+
+while t < T
+    t = t + exprnd(1/lambda_max); % exponential interarrival
+    if t < T
+        times(end+1) = t;
+    end
+end
+
+% Accept/reject arrival times
+accepted = [];
+
+for i = 1:length(times)
+    if rand < lambda(times(i)) / lambda_max
+        accepted(end+1) = times(i);
+    end
+end
+
+% Plot histogram
+histogram(accepted, 0:120)
+xlabel('Day')
+ylabel('Number of reports')
+title('Simulated Flu Reports (NHPP)')
+
+% Compare total count
+disp(['Total simulated reports: ', num2str(length(accepted))])
+disp('Expected value: 380')
