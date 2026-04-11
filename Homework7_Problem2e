@@ -1,0 +1,35 @@
+
+lambda = 3;
+t = 48;
+numGames = 1e5;
+
+D = zeros(numGames,1);
+
+for i = 1:numGames
+    
+    % total number of baskets in game
+    N = poissrnd(2*lambda*t);
+    
+    % split between teams
+    NA = binornd(N, 0.5);
+    NB = N - NA;
+    
+    % score difference
+    D(i) = 2*(NA - NB);
+    
+end
+
+% Estimates
+E_D(t) = mean(D);
+Var_D(t) = var(D);
+P_D(t) = mean(D == 0);
+
+% Theoretical values
+ED_theory = 0;
+VarD_theory = 8*lambda*t;
+P0_theory = 1 / (2 * sqrt(pi * lambda * t));
+
+% Display results
+fprintf('E[D(t)] estimate: %.4f | theory: %.4f\n', E_D(t), ED_theory);
+fprintf('Var[D(t)] estimate: %.4f | theory: %.4f\n', Var_D(t), VarD_theory);
+fprintf('P(D(t)=0) estimate: %.6e | theory: %.6e\n', P_D(t), P0_theory);
