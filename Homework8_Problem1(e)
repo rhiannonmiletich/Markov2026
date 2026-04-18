@@ -1,0 +1,78 @@
+% Time grid
+tgrid = linspace(0,5,200);
+
+% Different N values
+Nvals = [100, 1000, 10000, 100000];
+
+figure; hold on;
+
+for N = Nvals
+    
+    % Store fraction of chains in state 1
+    f = zeros(size(tgrid));
+    
+    for n = 1:N
+        
+        % Initial state: 1 with prob 1/3, 2 with prob 2/3
+        if rand < 1/3
+            state = 1;
+        else
+            state = 2;
+        end
+        
+        t = 0;
+        k = 1; % index for tgrid
+        
+        while t < 5
+            
+            % Time until next jump (Exp(1))
+            tau = exprnd(1);
+            
+            % Fill in all times before next jump
+            while k <= length(tgrid) && tgrid(k) < t + tau
+                if state == 1
+                    f(k) = f(k) + 1;
+                end
+                k = k + 1;
+            end
+            
+            % Move time forward
+            t = t + tau;
+            
+            % Jump to next state (cycle)
+            state = mod(state,4) + 1;
+        end
+        
+        % Fill remaining time points
+        while k <= length(tgrid)
+            if state == 1
+                f(k) = f(k) + 1;
+            end
+            k = k + 1;
+        end
+        
+    end
+    
+    % Convert counts to fraction
+    f = f / N;
+    
+    % Plot simulation
+    plot(tgrid, f, 'LineWidth', 2)
+end
+
+% ---- Theoretical solution ----
+y1 = 1/4 ...
+    - (1/12)*exp(-2*tgrid) ...
+    + (1/6)*exp(-tgrid).*cos(tgrid) ...
+    - (1/3)*exp(-tgrid).*sin(tgrid);
+
+plot(tgrid, y1, 'k', 'LineWidth', 1)
+
+% Formatting
+xlabel('t')
+ylabel('Fraction in state 1')
+title('Simulation vs Theory')
+ylim([0 0.5])
+xlim([0 5])
+legend('N=100','N=1000','N=10000','N=100000','Theory')
+grid on
