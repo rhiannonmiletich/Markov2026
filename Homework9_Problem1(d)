@@ -1,0 +1,44 @@
+L = 20;
+N = 1000;         
+alpha = 1;
+beta = 1;
+
+times = zeros(N,1);   % store hitting times
+
+for sim = 1:N
+    i = 0;            % start position
+    t = 0;            % current time
+    
+    while i < L
+        if i == 0
+            rate = alpha;   % only forward move
+            wait = exprnd(1/rate);
+            t = t + wait;
+            i = 1;
+        else
+            rate = alpha + beta;   % = 2
+            wait = exprnd(1/rate);
+            t = t + wait;
+            
+            % choose direction
+            if rand < 0.5
+                i = i + 1;
+            else
+                i = i - 1;
+            end
+        end
+    end
+    
+    times(sim) = t;
+end
+
+% Results
+m0_est = mean(times);
+variance_est = var(times);
+
+% Theoretical value
+m0_theory = L*(L+1)/(2*alpha);
+
+fprintf('Estimated m0: %.4f\n', m0_est);
+fprintf('Theoretical m0: %.4f\n', m0_theory);
+fprintf('Estimated variance: %.4f\n', variance_est);
